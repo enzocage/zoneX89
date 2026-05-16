@@ -194,15 +194,6 @@ function editorToolbarClick(sy){
     }
   }
 }
-  if(mazeDropdownOpen&&sy>=btnY+180){
-    const idx=Math.floor((sy-btnY-180)/28);
-    if(idx>=0&&idx<MAZE_ALGOS.length){
-      mazeSelectedAlgo=MAZE_ALGOS[idx];
-      mazeDropdownOpen=false;
-      generateAndPlaceMaze(mazeSelectedAlgo);
-    }
-  }
-}
 
 function editorPaintGrid(sx,sy){
   if(sx>=canvas.width-TB_W) return;
@@ -276,17 +267,6 @@ function generateAndPlaceMaze(algorithm){
     }
   }
 }
-
-function generateAndPlaceMaze(algorithm){
-  const mazeGrid=generateMaze(W,H,algorithm);
-  for(let y=0;y<H;y++){
-    for(let x=0;x<W;x++){
-      if(mazeGrid[y][x]===1){
-        edTiles[y][x]='wa';
-      }else if(mazeGrid[y][x]===0){
-        if(edTiles[y][x]!=='I'&&edTiles[y][x]!=='R'&&edTiles[y][x]!=='r'&&edTiles[y][x]!=='pu'&&edTiles[y][x]!=='to'&&edTiles[y][x]!=='tü'&&edTiles[y][x]!=='ma'){
-          edTiles[y][x]='fo';
-        }
       }
     }
   }
