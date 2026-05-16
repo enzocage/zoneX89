@@ -18,6 +18,7 @@ window.addEventListener("keydown",e=>{
   }
 
   if(e.code==="KeyE"){
+    console.log('KeyE pressed, helpOpen:',helpOpen,'edMode:',edMode);
     if(helpOpen) return;
     if(!edMode){ enterEditor(); SFX.editorEnter(); }
     else { exitEditor(); SFX.editorExit(); }
