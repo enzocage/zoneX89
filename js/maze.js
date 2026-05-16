@@ -174,7 +174,7 @@ function ellersMaze(width, height) {
     
     for (let i = 1; i < height; i += 2) {
         for (let m = 0; m < sets.length; m++) {
-            for (let n = 0; n < sets[m].length; n++) {
+            for (let n = sets[m].length - 1; n >= 0; n--) {
                 if (sets[m][n][0] < i) sets[m].splice(n, 1);
             }
         }
@@ -219,7 +219,11 @@ function ellersMaze(width, height) {
                 do { ind = Math.floor(Math.random() * sets[j].length); } while (sets[j][ind][0] !== i);
                 const newC = sets[j][ind].slice();
                 newC[0] += 2;
-                sets.splice(indexOfSet(sets, newC), 1);
+                const setIndex = indexOfSet(sets, newC);
+                if (setIndex !== -1) {
+                    sets.splice(setIndex, 1);
+                    if (setIndex < j) j--;
+                }
                 sets[j].push(newC);
                 maze[newC[0] - 1][newC[1]] = 0;
             }
@@ -508,8 +512,7 @@ function sidewinderMaze(width, height) {
             if (ctn) {
                 maze[row][col + 1] = 0;
             } else if (row !== 1) {
-                let up;
-                do { up = Math.floor(Math.random() * (col - begin)) + begin; } while (!(up % 2));
+                let up = Math.floor(Math.random() * ((col - begin) / 2)) * 2 + begin + 1;
                 maze[row - 1][up] = 0;
                 begin = col + 2;
             }
@@ -529,7 +532,7 @@ function binaryTreeMaze(width, height) {
     for (let i = 0; i < height; i++) {
         maze.push([]);
         for (let j = 0; j < width; j++) {
-            maze[i].push(!(i % 2 === 1 && j % 2 === 1));
+            maze[i].push(!(i % 2 === 1 && j % 2 === 1) + 0);
         }
     }
     
