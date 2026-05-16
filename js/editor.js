@@ -258,7 +258,3 @@ function generateAndPlaceMaze(algorithm){
     }
   }
 }
-      }
-    }
-  }
-}
