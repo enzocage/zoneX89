@@ -196,6 +196,9 @@ function edLoad(){
 
 function edClear(){
   edTiles=Array.from({length:H},()=>Array(W).fill('ai'));
+  for(let x=0;x<W;x++){ edTiles[0][x]='wa'; edTiles[H-1][x]='wa'; }
+  for(let y=0;y<H;y++){ edTiles[y][0]='wa'; edTiles[y][W-1]='wa'; }
+  for(let y=1;y<H-1;y++) for(let x=1;x<W-1;x++){ edTiles[y][x]='fo'; }
 }
 
 document.getElementById('file-input').addEventListener('change',ev=>{
