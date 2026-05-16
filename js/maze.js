@@ -512,7 +512,7 @@ function sidewinderMaze(width, height) {
             if (ctn) {
                 maze[row][col + 1] = 0;
             } else if (row !== 1) {
-                let up = Math.floor(Math.random() * ((col - begin) / 2)) * 2 + begin + 1;
+                let up = begin + Math.floor(Math.random() * ((col - begin) / 2 + 1)) * 2;
                 maze[row - 1][up] = 0;
                 begin = col + 2;
             }
