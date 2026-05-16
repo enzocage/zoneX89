@@ -185,15 +185,6 @@ function editorToolbarClick(sy){
     }
   }
 }
-  if(mazeDropdownOpen&&sy>=btnY+180){
-    const idx=Math.floor((sy-btnY-180)/28);
-    if(idx>=0&&idx<MAZE_ALGOS.length){
-      mazeSelectedAlgo=MAZE_ALGOS[idx];
-      mazeDropdownOpen=false;
-      generateAndPlaceMaze(mazeSelectedAlgo);
-    }
-  }
-}
 
 function editorPaintGrid(sx,sy){
   if(sx>=canvas.width-TB_W) return;
