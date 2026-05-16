@@ -169,16 +169,25 @@ function edBtn(label,x,y,w,h){
 function editorToolbarClick(sy){
   const ry=sy-34;
   const ti=Math.floor(ry/40);
-  if(ti>=0&&ti<ED_TOOLS.length){ edTool=ED_TOOLS[ti]; return; }
+  if(ti>=0&&ti<ED_TOOLS.length){ edTool=ED_TOOLS[ti]; mazeDropdownOpen=false; return; }
   const btnY=34+ED_TOOLS.length*40+16;
-  if(sy>=btnY&&sy<btnY+30)        edSave();
-  else if(sy>=btnY+36&&sy<btnY+66) edLoad();
-  else if(sy>=btnY+72&&sy<btnY+102){ exitEditor(); }
-  else if(sy>=btnY+108&&sy<btnY+138) edClear();
+  if(sy>=btnY&&sy<btnY+30)        { edSave(); mazeDropdownOpen=false; }
+  else if(sy>=btnY+36&&sy<btnY+66) { edLoad(); mazeDropdownOpen=false; }
+  else if(sy>=btnY+72&&sy<btnY+102){ exitEditor(); mazeDropdownOpen=false; }
+  else if(sy>=btnY+108&&sy<btnY+138) { edClear(); mazeDropdownOpen=false; }
   else if(sy>=btnY+144&&sy<btnY+174){
     mazeDropdownOpen=!mazeDropdownOpen;
     return;
   }
+  if(mazeDropdownOpen&&sy>=btnY+180){
+    const idx=Math.floor((sy-btnY-180)/28);
+    if(idx>=0&&idx<MAZE_ALGOS.length){
+      mazeSelectedAlgo=MAZE_ALGOS[idx];
+      mazeDropdownOpen=false;
+      generateAndPlaceMaze(mazeSelectedAlgo);
+    }
+  }
+}
   if(mazeDropdownOpen&&sy>=btnY+180){
     const idx=Math.floor((sy-btnY-180)/28);
     if(idx>=0&&idx<MAZE_ALGOS.length){
