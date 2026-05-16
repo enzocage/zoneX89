@@ -4,9 +4,6 @@ const TB_W=170;
 const MAZE_ALGOS = Object.keys(MAZE_ALGORITHMS);
 let mazeDropdownOpen = false;
 let mazeSelectedAlgo = 'Backtracking';
-const MAZE_ALGOS = Object.keys(MAZE_ALGORITHMS);
-let mazeDropdownOpen = false;
-let mazeSelectedAlgo = 'Backtracking';
 
 function enterEditor(){
   edMode=true;
