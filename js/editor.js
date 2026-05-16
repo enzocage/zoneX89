@@ -1,6 +1,12 @@
 const ED_TOOLS=['wa','fo','ai','pu','to','tü','ma','I','R','r'];
 const ED_COLS ={wa:'#1e1e1e',fo:'#0e1c2a',ai:'#080d12',pu:'#aaff00',to:'#3377ee','tü':'#8822dd',ma:'#bb9955',I:'#00ffcc',R:'#ff2233',r:'#ff7700'};
 const TB_W=170;
+const MAZE_ALGOS = Object.keys(MAZE_ALGORITHMS);
+let mazeDropdownOpen = false;
+let mazeSelectedAlgo = 'Backtracking';
+const MAZE_ALGOS = Object.keys(MAZE_ALGORITHMS);
+let mazeDropdownOpen = false;
+let mazeSelectedAlgo = 'Backtracking';
 
 function enterEditor(){
   edMode=true;
@@ -128,6 +134,24 @@ function renderEditor(){
   edBtn('📂 Laden',tbX+10,btnY+36,TB_W-20,30);
   edBtn('▶  Spielen',tbX+10,btnY+72,TB_W-20,30);
   edBtn('🗑  Leeren',tbX+10,btnY+108,TB_W-20,30);
+  edBtn('🌀 Maze',tbX+10,btnY+144,TB_W-20,30);
+
+  if(mazeDropdownOpen){
+    ctx.fillStyle='#0d0d18';
+    ctx.fillRect(tbX+10,btnY+180,TB_W-20,Math.min(MAZE_ALGOS.length,6)*28+4);
+    ctx.strokeStyle='rgba(0,200,160,0.4)';
+    ctx.lineWidth=1;
+    ctx.strokeRect(tbX+10,btnY+180,TB_W-20,Math.min(MAZE_ALGOS.length,6)*28+4);
+    MAZE_ALGOS.forEach((algo,i)=>{
+      const y=btnY+184+i*28;
+      ctx.fillStyle=mazeSelectedAlgo===algo?'#1a3a3a':'#111118';
+      ctx.fillRect(tbX+14,y,TB_W-28,24);
+      ctx.fillStyle='#ccc';
+      ctx.font='11px "Courier New",monospace';
+      ctx.textAlign='center';
+      ctx.fillText(algo,tbX+TB_W/2-6,y+16);
+    });
+  }
 
   ctx.fillStyle='rgba(255,255,255,0.2)';
   ctx.font='10px monospace';
@@ -151,6 +175,27 @@ function editorToolbarClick(sy){
   else if(sy>=btnY+36&&sy<btnY+66) edLoad();
   else if(sy>=btnY+72&&sy<btnY+102){ exitEditor(); }
   else if(sy>=btnY+108&&sy<btnY+138) edClear();
+  else if(sy>=btnY+144&&sy<btnY+174){
+    mazeDropdownOpen=!mazeDropdownOpen;
+    return;
+  }
+  if(mazeDropdownOpen&&sy>=btnY+180){
+    const idx=Math.floor((sy-btnY-180)/28);
+    if(idx>=0&&idx<MAZE_ALGOS.length){
+      mazeSelectedAlgo=MAZE_ALGOS[idx];
+      mazeDropdownOpen=false;
+      generateAndPlaceMaze(mazeSelectedAlgo);
+    }
+  }
+}
+  if(mazeDropdownOpen&&sy>=btnY+180){
+    const idx=Math.floor((sy-btnY-180)/28);
+    if(idx>=0&&idx<MAZE_ALGOS.length){
+      mazeSelectedAlgo=MAZE_ALGOS[idx];
+      mazeDropdownOpen=false;
+      generateAndPlaceMaze(mazeSelectedAlgo);
+    }
+  }
 }
 
 function editorPaintGrid(sx,sy){
@@ -210,3 +255,33 @@ document.getElementById('file-input').addEventListener('change',ev=>{
   };
   r.readAsText(f); ev.target.value='';
 });
+
+function generateAndPlaceMaze(algorithm){
+  const mazeGrid=generateMaze(W,H,algorithm);
+  for(let y=0;y<H;y++){
+    for(let x=0;x<W;x++){
+      if(mazeGrid[y][x]===1){
+        edTiles[y][x]='wa';
+      }else if(mazeGrid[y][x]===0){
+        if(edTiles[y][x]!=='I'&&edTiles[y][x]!=='R'&&edTiles[y][x]!=='r'&&edTiles[y][x]!=='pu'&&edTiles[y][x]!=='to'&&edTiles[y][x]!=='tü'&&edTiles[y][x]!=='ma'){
+          edTiles[y][x]='fo';
+        }
+      }
+    }
+  }
+}
+
+function generateAndPlaceMaze(algorithm){
+  const mazeGrid=generateMaze(W,H,algorithm);
+  for(let y=0;y<H;y++){
+    for(let x=0;x<W;x++){
+      if(mazeGrid[y][x]===1){
+        edTiles[y][x]='wa';
+      }else if(mazeGrid[y][x]===0){
+        if(edTiles[y][x]!=='I'&&edTiles[y][x]!=='R'&&edTiles[y][x]!=='r'&&edTiles[y][x]!=='pu'&&edTiles[y][x]!=='to'&&edTiles[y][x]!=='tü'&&edTiles[y][x]!=='ma'){
+          edTiles[y][x]='fo';
+        }
+      }
+    }
+  }
+}
