@@ -2,6 +2,10 @@
 
 **Ein browser-basiertes Remake des Atari XL Klassikers — neu interpretiert für das Web.**
 
+🌐 **[enzocage.de/code/zonex89](https://enzocage.de/code/zonex89)**
+
+![Zone X 89](gfx/cover2.jpeg)
+
 ---
 
 ## Das Original: Lode Runner / Labyrinth-Varianten auf dem Atari 400/800 XL (1983–1989)
