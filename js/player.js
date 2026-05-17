@@ -85,7 +85,7 @@ function onLand(){
   const pu=plutoniums.find(p=>!p.collected&&!p.carried&&p.x===x&&p.y===y);
   if(pu){
     pu.carried=true; player.carryPus.push(pu);
-    player.puTimer=P.PTIMER; player.tickAcc=0; player.tickAlt=false;
+    player.puTimer=Math.min(player.puTimer+P.PTIMER, P.PTIMER*5); player.tickAcc=0; player.tickAlt=false;
     restoreTile(x,y); SFX.puPickup(player.carryPus.length);
   }
 

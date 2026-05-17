@@ -189,6 +189,22 @@ function makeEntityCanvas(lbl, size){
     x.arc(bx+bw/2-eyeO,by+bh/2-size*0.05,eyeR,0,Math.PI*2);
     x.arc(bx+bw/2+eyeO,by+bh/2-size*0.05,eyeR,0,Math.PI*2);
     x.fill();
+    x.fillStyle='rgba(0,0,0,0.6)';
+    x.beginPath();
+    x.arc(bx+bw/2-eyeO,by+bh/2-size*0.05,eyeR*0.55,0,Math.PI*2);
+    x.arc(bx+bw/2+eyeO,by+bh/2-size*0.05,eyeR*0.55,0,Math.PI*2);
+    x.fill();
+    if(type==='fast'){
+      x.strokeStyle='rgba(20,0,0,0.9)';
+      x.lineWidth=Math.max(1,size*0.07);
+      x.lineCap='round';
+      x.beginPath();
+      x.moveTo(bx+bw/2-eyeO*1.8,by+bh/2-size*0.28);
+      x.lineTo(bx+bw/2-eyeO*0.2,by+bh/2-size*0.2);
+      x.moveTo(bx+bw/2+eyeO*0.2,by+bh/2-size*0.2);
+      x.lineTo(bx+bw/2+eyeO*1.8,by+bh/2-size*0.28);
+      x.stroke();
+    }
     x.restore();
     entityCanvasCache.set(key, c);
     return c;

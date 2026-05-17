@@ -216,11 +216,12 @@ function drawEnemy(e){
   ctx.fill();
 
   if(e.type==='fast'){
-    ctx.strokeStyle='rgba(255,80,80,0.5)';
-    ctx.lineWidth=1;
+    ctx.strokeStyle='rgba(20,0,0,0.9)';
+    ctx.lineWidth=2;
+    ctx.lineCap='round';
     ctx.beginPath();
-    ctx.moveTo(x+2,y+h/2-3);ctx.lineTo(x+8,y+h/2-3);
-    ctx.moveTo(x+2,y+h/2+3);ctx.lineTo(x+8,y+h/2+3);
+    ctx.moveTo(x+w/2-8,y+h/2-7);ctx.lineTo(x+w/2-1,y+h/2-5);
+    ctx.moveTo(x+w/2+1,y+h/2-5);ctx.lineTo(x+w/2+8,y+h/2-7);
     ctx.stroke();
   }
 
@@ -531,7 +532,7 @@ function overlay(title,sub,col){
   
   ctx.fillStyle='rgba(100,100,100,0.6)';
   ctx.font='15px "Courier New",monospace';
-  ctx.fillText('[R] Neustart',canvas.width/2,canvas.height/2+65);
+  ctx.fillText('[R] Startmenü',canvas.width/2,canvas.height/2+65);
   ctx.restore();
 }
 

@@ -41,8 +41,8 @@ window.addEventListener("keydown",e=>{
   }
 
   if(e.code==="KeyR" && (gameState==="gameover"||gameState==="levelwin")){
-    loadLevel(LEVEL_DATA);
-    initTuningPanel();
+    startScreenOpen=true;
+    document.getElementById('start-screen').style.display='';
     SFX.restart();
   }
 });
