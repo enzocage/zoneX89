@@ -79,13 +79,14 @@ function drawTile(x,y){
     ctx.restore();
   }
 
-  if(fogMap[y][x]){
+  const hasEntity = t==='pu'||t==='to'||t==='ma'||t==='tü';
+  if(fogMap[y][x] && !hasEntity){
     const fogGrad = ctx.createRadialGradient(px+TS/2,py+TS/2,TS*0.3,px+TS/2,py+TS/2,TS*0.7);
     fogGrad.addColorStop(0,'rgba(14,28,42,0.75)');
     fogGrad.addColorStop(1,'rgba(14,28,42,0.95)');
     ctx.fillStyle=fogGrad;
     ctx.fillRect(px,py,TS,TS);
-    
+
     ctx.fillStyle='rgba(40,80,120,0.12)';
     for(let i=0;i<3;i++){
       const fx=px+8+i*12;
@@ -102,7 +103,7 @@ function drawTile(x,y){
     ctx.fillRect(px+3*TS/4,py+TS/2+1,1,TS/2-3);
   }
 
-  if(t==='pu'&&!fogMap[y][x]){
+  if(t==='pu'){
     const pulse=Math.sin(Date.now()*0.005)*0.5+0.5;
     ctx.save();
     ctx.shadowColor='#aaff00'; ctx.shadowBlur=10+pulse*15;
@@ -131,7 +132,7 @@ function drawTile(x,y){
     ctx.restore();
   }
   
-  if(t==='to'&&!fogMap[y][x]){
+  if(t==='to'){
     ctx.save();
     const grad=ctx.createRadialGradient(px+TS/2,py+TS/2,4,px+TS/2,py+TS/2,TS/2);
     grad.addColorStop(0,'rgba(51,119,238,0.6)');
@@ -149,7 +150,7 @@ function drawTile(x,y){
     ctx.restore();
   }
   
-  if(t==='ma'&&!fogMap[y][x]){
+  if(t==='ma'){
     ctx.save();
     ctx.beginPath();ctx.rect(px+4,py+4,TS-8,TS-8);ctx.clip();
     ctx.strokeStyle='rgba(187,153,85,0.55)';ctx.lineWidth=1.5;
