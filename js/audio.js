@@ -155,8 +155,7 @@ const SFX = {
   },
 
   door: ()=>{
-    noiseSweep(0.08,0.1,4000,100);
-    tone(80,0.1,'triangle',0.06,0);
+    tone(50,0.1,'sine',0.02,0,0.4);
   },
 
   matDrop: ()=>{

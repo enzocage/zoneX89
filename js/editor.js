@@ -4,6 +4,10 @@ const TB_W=170;
 const MAZE_ALGOS = Object.keys(MAZE_ALGORITHMS);
 let mazeDropdownOpen = false;
 let mazeSelectedAlgo = 'Backtracking';
+let mazeDensity = 1;
+let mazeDropdownScroll = 0;
+let mazeSliderDragging = false;
+let mazeDropdownVisibleCount = 6;
 
 function enterEditor(){
   edMode=true;
@@ -131,23 +135,63 @@ function renderEditor(){
   edBtn('📂 Laden',tbX+10,btnY+36,TB_W-20,30);
   edBtn('▶  Spielen',tbX+10,btnY+72,TB_W-20,30);
   edBtn('🗑  Leeren',tbX+10,btnY+108,TB_W-20,30);
-  edBtn('🌀 Maze',tbX+10,btnY+144,TB_W-20,30);
+  // ── Maze Sektion ──
+  const mzY = btnY+144;
+  // Dropdown-Toggle-Button mit aktuellem Algo-Namen
+  const algoShort = mazeSelectedAlgo.length > 14 ? mazeSelectedAlgo.slice(0,13)+'…' : mazeSelectedAlgo;
+  ctx.fillStyle='#1a1a2a'; ctx.fillRect(tbX+10,mzY,TB_W-20,28);
+  ctx.strokeStyle=mazeDropdownOpen?'#00ffcc':'rgba(0,200,160,0.3)'; ctx.lineWidth=0.8;
+  ctx.strokeRect(tbX+10,mzY,TB_W-20,28);
+  ctx.fillStyle='#99bbaa'; ctx.font='11px "Courier New",monospace'; ctx.textAlign='left';
+  ctx.fillText('🌀 '+algoShort,tbX+14,mzY+18);
+  ctx.fillStyle=mazeDropdownOpen?'#00ffcc':'#556655'; ctx.textAlign='right';
+  ctx.fillText('▼',tbX+TB_W-14,mzY+18);
 
+  // Dichte-Slider
+  const slY = mzY+36;
+  ctx.fillStyle='#667766'; ctx.font='10px "Courier New",monospace'; ctx.textAlign='left';
+  ctx.fillText('Offen:Wand',tbX+12,slY+10);
+  ctx.fillStyle='#00ffcc'; ctx.textAlign='right';
+  ctx.fillText(mazeDensity+':1',tbX+TB_W-12,slY+10);
+  const slTrackX=tbX+12, slTrackY=slY+16, slTrackW=TB_W-24, slTrackH=10;
+  ctx.fillStyle='#1a1a2a'; ctx.fillRect(slTrackX,slTrackY,slTrackW,slTrackH);
+  ctx.strokeStyle='rgba(0,200,160,0.3)'; ctx.lineWidth=0.8;
+  ctx.strokeRect(slTrackX,slTrackY,slTrackW,slTrackH);
+  const slFill=((mazeDensity-1)/9)*slTrackW;
+  ctx.fillStyle='rgba(0,200,130,0.25)'; ctx.fillRect(slTrackX,slTrackY,slFill,slTrackH);
+  const knobX=slTrackX+slFill;
+  ctx.fillStyle='#00ffcc'; ctx.beginPath(); ctx.arc(knobX,slTrackY+slTrackH/2,5,0,Math.PI*2); ctx.fill();
+
+  // Dropdown-Liste
   if(mazeDropdownOpen){
-    ctx.fillStyle='#0d0d18';
-    ctx.fillRect(tbX+10,btnY+180,TB_W-20,Math.min(MAZE_ALGOS.length,6)*28+4);
-    ctx.strokeStyle='rgba(0,200,160,0.4)';
-    ctx.lineWidth=1;
-    ctx.strokeRect(tbX+10,btnY+180,TB_W-20,Math.min(MAZE_ALGOS.length,6)*28+4);
-    MAZE_ALGOS.forEach((algo,i)=>{
-      const y=btnY+184+i*28;
+    const itemH=22, ddX=tbX+10, ddW=TB_W-20;
+    const maxVis=Math.max(4,Math.min(MAZE_ALGOS.length,Math.floor((canvas.height-mzY-70)/itemH)));
+    mazeDropdownVisibleCount=maxVis;
+    mazeDropdownScroll=Math.max(0,Math.min(mazeDropdownScroll,MAZE_ALGOS.length-maxVis));
+    const ddY=mzY+70, ddH=maxVis*itemH+4;
+    ctx.fillStyle='#0d0d18'; ctx.fillRect(ddX,ddY,ddW,ddH);
+    ctx.strokeStyle='rgba(0,200,160,0.4)'; ctx.lineWidth=1;
+    ctx.strokeRect(ddX,ddY,ddW,ddH);
+    for(let vi=0;vi<maxVis;vi++){
+      const ai=vi+mazeDropdownScroll;
+      if(ai>=MAZE_ALGOS.length) break;
+      const algo=MAZE_ALGOS[ai];
+      const iy=ddY+2+vi*itemH;
       ctx.fillStyle=mazeSelectedAlgo===algo?'#1a3a3a':'#111118';
-      ctx.fillRect(tbX+14,y,TB_W-28,24);
-      ctx.fillStyle='#ccc';
-      ctx.font='11px "Courier New",monospace';
-      ctx.textAlign='center';
-      ctx.fillText(algo,tbX+TB_W/2-6,y+16);
-    });
+      ctx.fillRect(ddX+2,iy,ddW-4,itemH-2);
+      ctx.fillStyle=mazeSelectedAlgo===algo?'#00ffcc':'#aabbaa';
+      ctx.font='10px "Courier New",monospace'; ctx.textAlign='center';
+      ctx.fillText(algo,tbX+TB_W/2,iy+14);
+    }
+    // Scroll-Indikatoren
+    if(mazeDropdownScroll>0){
+      ctx.fillStyle='rgba(0,255,200,0.6)'; ctx.font='9px monospace'; ctx.textAlign='center';
+      ctx.fillText('▲',tbX+TB_W/2,ddY+8);
+    }
+    if(mazeDropdownScroll+maxVis<MAZE_ALGOS.length){
+      ctx.fillStyle='rgba(0,255,200,0.6)'; ctx.font='9px monospace'; ctx.textAlign='center';
+      ctx.fillText('▼',tbX+TB_W/2,ddY+ddH-2);
+    }
   }
 
   ctx.fillStyle='rgba(255,255,255,0.2)';
@@ -163,27 +207,42 @@ function edBtn(label,x,y,w,h){
   ctx.textAlign='center'; ctx.fillText(label,x+w/2,y+h/2+4);
 }
 
-function editorToolbarClick(sy){
+function editorToolbarClick(sx, sy){
   const ry=sy-34;
   const ti=Math.floor(ry/40);
   if(ti>=0&&ti<ED_TOOLS.length){ edTool=ED_TOOLS[ti]; mazeDropdownOpen=false; return; }
   const btnY=34+ED_TOOLS.length*40+16;
-  if(sy>=btnY&&sy<btnY+30)        { edSave(); mazeDropdownOpen=false; }
-  else if(sy>=btnY+36&&sy<btnY+66) { edLoad(); mazeDropdownOpen=false; }
-  else if(sy>=btnY+72&&sy<btnY+102){ exitEditor(); mazeDropdownOpen=false; }
-  else if(sy>=btnY+108&&sy<btnY+138) { edClear(); mazeDropdownOpen=false; }
-  else if(sy>=btnY+144&&sy<btnY+174){
+  if(sy>=btnY&&sy<btnY+30)          { edSave(); mazeDropdownOpen=false; }
+  else if(sy>=btnY+36&&sy<btnY+66)  { edLoad(); mazeDropdownOpen=false; }
+  else if(sy>=btnY+72&&sy<btnY+102) { exitEditor(); mazeDropdownOpen=false; }
+  else if(sy>=btnY+108&&sy<btnY+138){ edClear(); mazeDropdownOpen=false; }
+  else if(sy>=btnY+144&&sy<btnY+172){
+    // Maze-Dropdown-Button
     mazeDropdownOpen=!mazeDropdownOpen;
     return;
-  }
-  if(mazeDropdownOpen&&sy>=btnY+180){
-    const idx=Math.floor((sy-btnY-180)/28);
-    if(idx>=0&&idx<MAZE_ALGOS.length){
-      mazeSelectedAlgo=MAZE_ALGOS[idx];
+  } else if(sy>=btnY+180&&sy<btnY+207){
+    // Slider (Label + Track)
+    mazeSliderDragging=true;
+    editorSliderMove(sx);
+  } else if(mazeDropdownOpen&&sy>=btnY+214){
+    // Dropdown-Einträge
+    const itemH=22;
+    const ddY=btnY+214;
+    const vi=Math.floor((sy-ddY)/itemH);
+    const ai=vi+mazeDropdownScroll;
+    if(vi>=0&&vi<mazeDropdownVisibleCount&&ai>=0&&ai<MAZE_ALGOS.length){
+      mazeSelectedAlgo=MAZE_ALGOS[ai];
       mazeDropdownOpen=false;
       generateAndPlaceMaze(mazeSelectedAlgo);
     }
   }
+}
+
+function editorSliderMove(sx){
+  const tbX=canvas.width-TB_W;
+  const slTrackX=tbX+12, slTrackW=TB_W-24;
+  const t=Math.max(0,Math.min(1,(sx-slTrackX)/slTrackW));
+  mazeDensity=Math.max(1,Math.min(10,Math.round(1+t*9)));
 }
 
 function editorPaintGrid(sx,sy){
@@ -245,7 +304,7 @@ document.getElementById('file-input').addEventListener('change',ev=>{
 });
 
 function generateAndPlaceMaze(algorithm){
-  const mazeGrid=generateMaze(W,H,algorithm);
+  const mazeGrid=generateMaze(W,H,algorithm,mazeDensity);
   for(let y=0;y<H;y++){
     for(let x=0;x<W;x++){
       if(mazeGrid[y][x]===1){

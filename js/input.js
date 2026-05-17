@@ -29,7 +29,7 @@ window.addEventListener("keydown",e=>{
     if(!edMode && player.carryMat){
       const tx=player.prevGx, ty=player.prevGy;
       const t=tiles[ty][tx];
-      if(t!=="wa"&&t!=="to"&&t!=="tü"&&t!=="pu"){
+      if(t!=="wa"&&t!=="to"&&t!=="tï¿½"&&t!=="pu"){
         let m=mats.find(m2=>!m2.active);
         if(!m){ m={x:0,y:0,active:false}; mats.push(m); }
         m.x=tx; m.y=ty; m.active=true;
@@ -53,24 +53,35 @@ canvas.addEventListener("mousemove",e=>{
   if(!edMode) return;
   const [gx,gy]=screenToGrid(e.clientX,e.clientY);
   edHX=gx; edHY=gy;
-  if(edDrag) editorPaintGrid(e.clientX,e.clientY);
+  if(edDrag){
+    if(mazeSliderDragging) editorSliderMove(e.clientX);
+    else editorPaintGrid(e.clientX,e.clientY);
+  }
 });
 
 canvas.addEventListener("mousedown",e=>{
   if(!edMode) return;
   edDrag=true;
   if(e.clientX>=canvas.width-TB_W){
-    editorToolbarClick(e.clientY);
+    editorToolbarClick(e.clientX,e.clientY);
   } else {
+    mazeSliderDragging=false;
     editorPaintGrid(e.clientX,e.clientY);
   }
 });
 
-canvas.addEventListener("mouseup",()=>{ edDrag=false; });
-canvas.addEventListener("mouseleave",()=>{ edDrag=false; });
-window.addEventListener("mouseup",()=>{ edDrag=false; });
+canvas.addEventListener("mouseup",()=>{ edDrag=false; mazeSliderDragging=false; });
+canvas.addEventListener("mouseleave",()=>{ edDrag=false; mazeSliderDragging=false; });
+window.addEventListener("mouseup",()=>{ edDrag=false; mazeSliderDragging=false; });
 
 canvas.addEventListener("wheel",e=>{
-  if(helpOpen){ helpScrollY=Math.max(0,helpScrollY+e.deltaY*0.5); e.preventDefault(); }
+  if(helpOpen){ helpScrollY=Math.max(0,helpScrollY+e.deltaY*0.5); e.preventDefault(); return; }
+  if(mazeDropdownOpen && e.clientX>=canvas.width-TB_W){
+    mazeDropdownScroll=Math.max(0,Math.min(
+      MAZE_ALGOS.length-mazeDropdownVisibleCount,
+      mazeDropdownScroll+(e.deltaY>0?1:-1)
+    ));
+    e.preventDefault();
+  }
 },{passive:false});
 

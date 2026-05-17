@@ -38,6 +38,18 @@ function initTuningPanel(){
   fRow.innerHTML='fog live <span id="tv-LIVE">–</span>';
   panel.appendChild(fRow);
 
+  const vSep=document.createElement('div'); vSep.className='tun-sep'; panel.appendChild(vSep);
+  const vRow=document.createElement('div'); vRow.className='tun-row';
+  const vLbl=document.createElement('span'); vLbl.className='tun-label'; vLbl.textContent='MUSIK VOL';
+  const vSlider=document.createElement('input'); vSlider.type='range'; vSlider.min='0'; vSlider.max='100'; vSlider.value='10';
+  vSlider.className='vol-slider'; vSlider.id='vol-slider';
+  vSlider.addEventListener('input',()=>{
+    const m=document.getElementById('bg-music');
+    if(m) m.volume=vSlider.value/100;
+  });
+  vRow.append(vLbl,vSlider);
+  panel.appendChild(vRow);
+
   const btn=document.getElementById('tun-toggle');
   btn.onclick=()=>{
     tunVisible=!tunVisible;

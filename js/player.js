@@ -34,6 +34,7 @@ function updatePlayer(dt){
         player.tx=nx; player.ty=ny; player.moving=true;
       }
     }
+    checkDoorsContinuous();
   }
 
   if(player.moving){

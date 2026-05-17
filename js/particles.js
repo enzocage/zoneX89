@@ -95,11 +95,6 @@ const SFX_PARTICLES = {
     emitParticles(x, y, 'glow', 15, 360, 30, 80);
   },
   
-  doorOpen: (x, y) => {
-    emitParticles(x, y, 'smoke', 8, 90, 20, 50);
-    emitParticles(x, y, 'spark', 4, 180, 40, 80);
-  },
-  
   enemyHit: (x, y, type) => {
     const color = type === 'fast' ? 'spark_green' : 'ember';
     emitParticles(x, y, color, 10, 360, 60, 120);

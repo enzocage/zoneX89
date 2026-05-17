@@ -9,6 +9,20 @@
 <body>
 <canvas id="c"></canvas>
 <input type="file" id="file-input" accept=".json">
+<audio id="bg-music" loop preload="none"></audio>
+
+<div id="start-screen">
+  <div id="start-bg"></div>
+  <div id="start-center">
+    <div id="start-logo">ZONE X</div>
+    <button id="start-btn">▶ STARTEN</button>
+    <select id="level-select"></select>
+  </div>
+  <div id="start-info">
+    <div id="start-info-title">── SPIELINFO ──</div>
+    <div id="start-help-body"></div>
+  </div>
+</div>
 
 <button id="tun-toggle" title="Tuning ein-/ausblenden">⚙</button>
 

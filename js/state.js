@@ -29,6 +29,7 @@ let edTiles = [], edTool = 'wa', edHX=-1, edHY=-1, edDrag=false;
 
 let helpOpen = false;
 let helpScrollY = 0;
+let startScreenOpen = true;
 const HELP_CONTENT = [
   {t:'head', text:'STEUERUNG'},
   {t:'ctrl', key:'WASD / ↑↓←→',  desc:'Spieler bewegen'},
