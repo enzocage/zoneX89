@@ -1,6 +1,27 @@
 const ED_TOOLS=['wa','fo','ai','pu','to','tü','ma','I','R','r'];
 const ED_COLS ={wa:'#1e1e1e',fo:'#0e1c2a',ai:'#080d12',pu:'#aaff00',to:'#3377ee','tü':'#8822dd',ma:'#bb9955',I:'#00ffcc',R:'#ff2233',r:'#ff7700'};
 const TB_W=170;
+let edHistory=[], edFuture=[];
+
+function editorSaveHistory(){
+  edHistory.push(edTiles.map(r=>[...r]));
+  if(edHistory.length>100) edHistory.shift();
+  edFuture=[];
+}
+
+function editorUndo(){
+  if(!edHistory.length) return;
+  edFuture.push(edTiles.map(r=>[...r]));
+  if(edFuture.length>100) edFuture.shift();
+  edTiles=edHistory.pop();
+}
+
+function editorRedo(){
+  if(!edFuture.length) return;
+  edHistory.push(edTiles.map(r=>[...r]));
+  if(edHistory.length>100) edHistory.shift();
+  edTiles=edFuture.pop();
+}
 const MAZE_ALGOS = Object.keys(MAZE_ALGORITHMS);
 let mazeDropdownOpen = false;
 let mazeSelectedAlgo = 'Backtracking';
@@ -135,8 +156,10 @@ function renderEditor(){
   edBtn('📂 Laden',tbX+10,btnY+36,TB_W-20,30);
   edBtn('▶  Spielen',tbX+10,btnY+72,TB_W-20,30);
   edBtn('🗑  Leeren',tbX+10,btnY+108,TB_W-20,30);
+  edBtnDim('↩ Rückgängig',tbX+10,btnY+144,TB_W-20,30,edHistory.length>0);
+  edBtnDim('↪ Wiederholen',tbX+10,btnY+180,TB_W-20,30,edFuture.length>0);
   // ── Maze Sektion ──
-  const mzY = btnY+144;
+  const mzY = btnY+216;
   // Dropdown-Toggle-Button mit aktuellem Algo-Namen
   const algoShort = mazeSelectedAlgo.length > 14 ? mazeSelectedAlgo.slice(0,13)+'…' : mazeSelectedAlgo;
   ctx.fillStyle='#1a1a2a'; ctx.fillRect(tbX+10,mzY,TB_W-20,28);
@@ -207,6 +230,13 @@ function edBtn(label,x,y,w,h){
   ctx.textAlign='center'; ctx.fillText(label,x+w/2,y+h/2+4);
 }
 
+function edBtnDim(label,x,y,w,h,active){
+  ctx.fillStyle=active?'#1a1a2a':'#111116'; ctx.fillRect(x,y,w,h);
+  ctx.strokeStyle=active?'rgba(0,200,160,0.3)':'rgba(80,80,80,0.2)'; ctx.lineWidth=0.8; ctx.strokeRect(x,y,w,h);
+  ctx.fillStyle=active?'#99bbaa':'#444455'; ctx.font='12px "Courier New",monospace';
+  ctx.textAlign='center'; ctx.fillText(label,x+w/2,y+h/2+4);
+}
+
 function editorToolbarClick(sx, sy){
   const ry=sy-34;
   const ti=Math.floor(ry/40);
@@ -216,18 +246,20 @@ function editorToolbarClick(sx, sy){
   else if(sy>=btnY+36&&sy<btnY+66)  { edLoad(); mazeDropdownOpen=false; }
   else if(sy>=btnY+72&&sy<btnY+102) { exitEditor(); mazeDropdownOpen=false; }
   else if(sy>=btnY+108&&sy<btnY+138){ edClear(); mazeDropdownOpen=false; }
-  else if(sy>=btnY+144&&sy<btnY+172){
+  else if(sy>=btnY+144&&sy<btnY+174){ editorUndo(); mazeDropdownOpen=false; }
+  else if(sy>=btnY+180&&sy<btnY+210){ editorRedo(); mazeDropdownOpen=false; }
+  else if(sy>=btnY+216&&sy<btnY+244){
     // Maze-Dropdown-Button
     mazeDropdownOpen=!mazeDropdownOpen;
     return;
-  } else if(sy>=btnY+180&&sy<btnY+207){
+  } else if(sy>=btnY+252&&sy<btnY+279){
     // Slider (Label + Track)
     mazeSliderDragging=true;
     editorSliderMove(sx);
-  } else if(mazeDropdownOpen&&sy>=btnY+214){
+  } else if(mazeDropdownOpen&&sy>=btnY+286){
     // Dropdown-Einträge
     const itemH=22;
-    const ddY=btnY+214;
+    const ddY=btnY+286;
     const vi=Math.floor((sy-ddY)/itemH);
     const ai=vi+mazeDropdownScroll;
     if(vi>=0&&vi<mazeDropdownVisibleCount&&ai>=0&&ai<MAZE_ALGOS.length){
@@ -306,6 +338,7 @@ function edLoad(){
 }
 
 function edClear(){
+  editorSaveHistory();
   edTiles=Array.from({length:H},()=>Array(W).fill('ai'));
   for(let x=0;x<W;x++){ edTiles[0][x]='wa'; edTiles[H-1][x]='wa'; }
   for(let y=0;y<H;y++){ edTiles[y][0]='wa'; edTiles[y][W-1]='wa'; }
@@ -323,6 +356,7 @@ document.getElementById('file-input').addEventListener('change',ev=>{
 });
 
 function generateAndPlaceMaze(algorithm){
+  editorSaveHistory();
   const mazeGrid=generateMaze(W,H,algorithm,mazeDensity);
   for(let y=0;y<H;y++){
     for(let x=0;x<W;x++){

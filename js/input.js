@@ -65,7 +65,10 @@ canvas.addEventListener("mousedown",e=>{
     e.preventDefault();
     if(e.clientX<canvas.width-TB_W){
       const [gx,gy]=screenToGrid(e.clientX,e.clientY);
-      if(gx>=0&&gy>=0&&gx<W&&gy<H) editorFloodFill(gx,gy);
+      if(gx>=0&&gy>=0&&gx<W&&gy<H){
+        editorSaveHistory();
+        editorFloodFill(gx,gy);
+      }
     }
     return;
   }
@@ -74,6 +77,7 @@ canvas.addEventListener("mousedown",e=>{
     editorToolbarClick(e.clientX,e.clientY);
   } else {
     mazeSliderDragging=false;
+    editorSaveHistory();
     editorPaintGrid(e.clientX,e.clientY);
   }
 });

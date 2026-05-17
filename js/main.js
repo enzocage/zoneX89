@@ -42,35 +42,20 @@ async function buildStartScreen(){
   helpBody.innerHTML=html;
 
   const select=document.getElementById('level-select');
-  let levels=[{name:'Level 1',file:null}];
 
-  // 1) Try directory listing (Python http.server, nginx autoindex, Live Server, etc.)
+  // Primary: embedded manifest (works on file:// and http://)
+  let levels = typeof LEVEL_MANIFEST !== 'undefined' ? LEVEL_MANIFEST : [];
+
+  // Supplement: try fetching manifest.json for any dynamically added levels
   try{
-    const dr=await fetch('levels/');
-    if(dr.ok){
-      const html=await dr.text();
-      const found=[...html.matchAll(/href="([^"#?][^"]*\.json)"/gi)]
-        .map(m=>m[1].split('/').pop())
-        .filter(f=>f&&f!=='manifest.json')
-        .map(f=>{
-          const base=f.replace(/\.json$/i,'');
-          const name=base.replace(/([a-zA-Z])(\d)/g,'$1 $2')
-                         .replace(/[-_]/g,' ')
-                         .replace(/^./,c=>c.toUpperCase());
-          return {name,file:'levels/'+f};
-        })
-        .sort((a,b)=>a.name.localeCompare(b.name,undefined,{numeric:true}));
-      if(found.length) levels=found;
+    const mr=await fetch('levels/manifest.json');
+    if(mr.ok){
+      const m=await mr.json();
+      if(Array.isArray(m)&&m.length) levels=m;
     }
   }catch(e){}
 
-  // 2) Fallback: manifest.json
-  if(levels.length===1&&!levels[0].file){
-    try{
-      const mr=await fetch('levels/manifest.json');
-      if(mr.ok){ const m=await mr.json(); if(m.length) levels=m; }
-    }catch(e){}
-  }
+  if(!levels.length) levels=[{name:'Level 1',file:null}];
 
   levels.forEach((lvl,i)=>{
     const opt=document.createElement('option');
@@ -81,7 +66,10 @@ async function buildStartScreen(){
   document.getElementById('start-btn').addEventListener('click',async ()=>{
     const idx=parseInt(select.value)||0;
     const lvl=levels[idx];
-    if(lvl&&lvl.file){
+    // Use embedded data first (works on file://), then try fetch, then fall back
+    if(lvl&&lvl.data){
+      loadLevel(lvl.data);
+    } else if(lvl&&lvl.file){
       try{
         const r=await fetch(lvl.file);
         const data=await r.json();

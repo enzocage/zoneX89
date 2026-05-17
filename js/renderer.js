@@ -5,7 +5,6 @@ function render(){
   if(edMode){ renderEditor(); return; }
 
   updateLightSources();
-  updateParticles(1/60);
   updatePostProcessing(1/60);
 
   ctx.save();
@@ -27,8 +26,6 @@ function render(){
   }
 
   drawPlayer();
-
-  renderParticles();
 
   ctx.restore();
 
@@ -184,10 +181,8 @@ function drawTile(x,y){
     ctx.restore();
   }
   
-  if(barrel&&barrel.flash>0){
-    SFX_PARTICLES.barrelFlash(x*TS+TS/2,y*TS+TS/2);
-  }
 }
+
 
 function drawEnemy(e){
   const pad=4;
@@ -201,41 +196,33 @@ function drawEnemy(e){
   ctx.fillStyle=color;
   
   const x=e.px+pad, y=e.py+pad, w=TS-pad*2, h=TS-pad*2;
-  
+  const radius = e.type==='fast' ? 3 : 5;
+
   ctx.beginPath();
-  if(e.type==='fast'){
-    ctx.moveTo(x+w/2, y+2);
-    ctx.lineTo(x+w-2, y+h/2);
-    ctx.lineTo(x+w/2, y+h-2);
-    ctx.lineTo(x+2, y+h/2);
-    ctx.closePath();
-  } else {
-    roundRect(x,y,w,h,5);
-  }
+  roundRect(x,y,w,h,radius);
   ctx.fill();
-  
+
   ctx.fillStyle='rgba(255,255,255,0.4)';
-  const eyeSize = e.type==='fast' ? 3 : 4;
-  const eyeOffset = e.type==='fast' ? 6 : 8;
   ctx.beginPath();
-  ctx.arc(x+w/2-eyeOffset/2, y+h/2-2, eyeSize, 0, Math.PI*2);
-  ctx.arc(x+w/2+eyeOffset/2, y+h/2-2, eyeSize, 0, Math.PI*2);
+  ctx.arc(x+w/2-4, y+h/2-2, 4, 0, Math.PI*2);
+  ctx.arc(x+w/2+4, y+h/2-2, 4, 0, Math.PI*2);
   ctx.fill();
-  
+
   ctx.fillStyle='rgba(0,0,0,0.6)';
   ctx.beginPath();
-  ctx.arc(x+w/2-eyeOffset/2, y+h/2-2, eyeSize*0.5, 0, Math.PI*2);
-  ctx.arc(x+w/2+eyeOffset/2, y+h/2-2, eyeSize*0.5, 0, Math.PI*2);
+  ctx.arc(x+w/2-4, y+h/2-2, 2, 0, Math.PI*2);
+  ctx.arc(x+w/2+4, y+h/2-2, 2, 0, Math.PI*2);
   ctx.fill();
-  
+
   if(e.type==='fast'){
-    const trailGrad = ctx.createLinearGradient(x,y,x+w,y+h);
-    trailGrad.addColorStop(0,'rgba(255,50,50,0.3)');
-    trailGrad.addColorStop(1,'rgba(255,50,50,0)');
-    ctx.fillStyle=trailGrad;
-    ctx.fillRect(x-4,y+4,4,h-8);
+    ctx.strokeStyle='rgba(255,80,80,0.5)';
+    ctx.lineWidth=1;
+    ctx.beginPath();
+    ctx.moveTo(x+2,y+h/2-3);ctx.lineTo(x+8,y+h/2-3);
+    ctx.moveTo(x+2,y+h/2+3);ctx.lineTo(x+8,y+h/2+3);
+    ctx.stroke();
   }
-  
+
   ctx.restore();
 }
 
@@ -548,7 +535,6 @@ function overlay(title,sub,col){
 }
 
 function drawGameOver(){ overlay('GAME OVER','Score: '+score,'#ff2244'); }
-function drawLevelWin(){ 
-  SFX_PARTICLES.levelWin(canvas.width/2,canvas.height/2);
-  overlay('LEVEL COMPLETE!','Score: '+score+' — Alle '+totalPu+' Plutonium abgeliefert','#aaff00'); 
+function drawLevelWin(){
+  overlay('LEVEL COMPLETE!','Score: '+score+' — Alle '+totalPu+' Plutonium abgeliefert','#aaff00');
 }

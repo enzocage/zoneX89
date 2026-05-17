@@ -175,17 +175,12 @@ function makeEntityCanvas(lbl, size){
     x.shadowColor=glow; x.shadowBlur=size*0.2;
     x.fillStyle=color;
     const bx=pad,by=pad,bw=size-pad*2,bh=size-pad*2;
+    const r=type==='fast'?Math.max(1,Math.floor(size*0.08)):Math.max(2,Math.floor(size*0.15));
     x.beginPath();
-    if(type==='fast'){
-      x.moveTo(bx+bw/2,by+2);x.lineTo(bx+bw-2,by+bh/2);
-      x.lineTo(bx+bw/2,by+bh-2);x.lineTo(bx+2,by+bh/2);x.closePath();
-    } else {
-      const r=Math.max(2,Math.floor(size*0.15));
-      x.moveTo(bx+r,by);x.lineTo(bx+bw-r,by);x.quadraticCurveTo(bx+bw,by,bx+bw,by+r);
-      x.lineTo(bx+bw,by+bh-r);x.quadraticCurveTo(bx+bw,by+bh,bx+bw-r,by+bh);
-      x.lineTo(bx+r,by+bh);x.quadraticCurveTo(bx,by+bh,bx,by+bh-r);
-      x.lineTo(bx,by+r);x.quadraticCurveTo(bx,by,bx+r,by);x.closePath();
-    }
+    x.moveTo(bx+r,by);x.lineTo(bx+bw-r,by);x.quadraticCurveTo(bx+bw,by,bx+bw,by+r);
+    x.lineTo(bx+bw,by+bh-r);x.quadraticCurveTo(bx+bw,by+bh,bx+bw-r,by+bh);
+    x.lineTo(bx+r,by+bh);x.quadraticCurveTo(bx,by+bh,bx,by+bh-r);
+    x.lineTo(bx,by+r);x.quadraticCurveTo(bx,by,bx+r,by);x.closePath();
     x.fill();
     x.fillStyle='rgba(255,255,255,0.4)';
     const eyeR=Math.max(1.5,size*0.1);

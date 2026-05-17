@@ -11,8 +11,8 @@ function loadLevel(data){
     INVTIME:  data.params.INVINCIBLE_TIME || 2,
     NAME:     data.meta.name || 'ZONE X',
   };
-  P.FOG_PCT = 30;
-  P.ZOOM    = fogPctToZoom(30);
+  P.FOG_PCT = 20;
+  P.ZOOM    = fogPctToZoom(20);
   W = data.meta.width; H = data.meta.height;
 
   tiles = data.tiles.map(r=>[...r]);

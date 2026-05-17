@@ -13,7 +13,6 @@ function revealFogAround(){
   }
   if(revealed) {
     SFX.fogStep();
-    SFX_PARTICLES.puPickup(player.px+TS/2, player.py+TS/2);
   }
 }
 
@@ -88,20 +87,16 @@ function onLand(){
     pu.carried=true; player.carryPus.push(pu);
     player.puTimer=P.PTIMER; player.tickAcc=0; player.tickAlt=false;
     restoreTile(x,y); SFX.puPickup(player.carryPus.length);
-    SFX_PARTICLES.puPickup(x*TS+TS/2, y*TS+TS/2);
   }
 
   if(player.carryPus.length>0){
     const b=barrels.find(b=>b.x===x&&b.y===y);
-    if(b) {
-      deliverPu(b);
-      SFX_PARTICLES.puDeliver(x*TS+TS/2, y*TS+TS/2);
-    }
+    if(b) deliverPu(b);
   }
 
   if(!player.carryMat){
     const m=mats.find(m=>m.active&&m.x===x&&m.y===y);
-    if(m){ m.active=false; player.carryMat=true; restoreTile(x,y); SFX.matPick(); SFX_PARTICLES.matPickup(x*TS+TS/2, y*TS+TS/2); }
+    if(m){ m.active=false; player.carryMat=true; restoreTile(x,y); SFX.matPick(); }
   }
 
   checkPlayerEnemyCollision();
@@ -125,7 +120,6 @@ function onPuExpired(){
 function loseLife(){
   if(invTimer>0) return;
   lives--; SFX.lifeLost();
-  SFX_PARTICLES.lifeLost(player.px+TS/2, player.py+TS/2);
   addShake(10, 0.3);
   if(player.carryMat) player.carryMat=false;
   if(player.carryPus.length>0){
@@ -149,7 +143,6 @@ function loseLife(){
   invTimer=P.INVTIME;
   setTimeout(()=>SFX.respawn(), 80);
   setTimeout(()=>SFX.shield(), 220);
-  setTimeout(()=>SFX_PARTICLES.respawn(player.px+TS/2, player.py+TS/2), 250);
 }
 
 function checkPlayerEnemyCollision(){
