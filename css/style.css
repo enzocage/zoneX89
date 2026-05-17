@@ -160,41 +160,85 @@ canvas{display:block;image-rendering:pixelated}
 #start-btn{
   font-family:'Courier New',monospace;
   font-size:15px;font-weight:bold;letter-spacing:4px;
-  background:rgba(0,0,0,0.3);
+  background:#000;
   border:1px solid;
   padding:12px 48px;cursor:pointer;
   animation:rainbow-btn 0.4s linear infinite;
 }
 #start-btn:hover{background:rgba(255,255,255,0.08)}
 #start-btn:active{background:rgba(255,255,255,0.18)}
+@keyframes blink-help{
+  0%,100%{opacity:1;border-color:rgba(0,255,200,0.5)}
+  50%{opacity:0.45;border-color:rgba(0,255,200,0.15)}
+}
+#start-help-btn{
+  font-family:'Courier New',monospace;
+  font-size:12px;font-weight:bold;letter-spacing:2px;
+  color:#00ffcc;
+  background:rgba(0,255,200,0.06);
+  border:1px solid rgba(0,255,200,0.4);
+  padding:8px 24px;cursor:pointer;
+  animation:blink-help 1.6s ease-in-out infinite;
+}
+#start-help-btn:hover{
+  background:rgba(0,255,200,0.15);
+  animation:none;
+  border-color:rgba(0,255,200,0.7);
+}
 #level-select{
   font-family:'Courier New',monospace;
   font-size:12px;color:#00ffcc;
   background:rgba(2,5,14,0.88);
   border:1px solid rgba(0,255,200,0.25);
-  padding:7px 16px;cursor:pointer;
+  padding:7px 32px 7px 16px;cursor:pointer;
   min-width:200px;text-align:center;
-  -webkit-appearance:none;appearance:none;
   outline:none;
+  -webkit-appearance:none;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2300ffcc' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 10px center;
 }
 #level-select option{background:#02050e;color:#00ffcc}
 #level-select:focus{border-color:rgba(0,255,200,0.55)}
 #start-info{
-  position:absolute;
-  bottom:20px;right:20px;
-  width:340px;
-  max-height:52vh;
-  display:flex;flex-direction:column;
-  background:rgba(2,5,14,0.9);
-  border:1px solid rgba(0,255,200,0.2);
-  backdrop-filter:blur(4px);
+  position:fixed;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:min(680px,90vw);
+  max-height:80vh;
+  display:none;flex-direction:column;
+  background:rgba(2,5,14,0.97);
+  border:1px solid rgba(0,255,200,0.35);
+  backdrop-filter:blur(8px);
+  z-index:300;
 }
-#start-info-title{
+#start-info.visible{
+  display:flex;
+}
+#start-info-header{
+  display:flex;align-items:center;justify-content:space-between;
   padding:9px 16px 7px;
   border-bottom:1px solid rgba(0,255,200,0.12);
+  flex-shrink:0;
+}
+#start-info-title{
   font-family:'Courier New',monospace;
   font-size:10px;font-weight:bold;
-  color:#00ffcc;letter-spacing:2px;flex-shrink:0;
+  color:#00ffcc;letter-spacing:2px;
+}
+#start-info-close{
+  background:transparent;
+  border:1px solid rgba(0,255,200,0.3);
+  color:#00ffcc;cursor:pointer;
+  font-size:13px;width:24px;height:24px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Courier New',monospace;
+  border-radius:2px;
+  transition:background 0.1s,border-color 0.1s;
+}
+#start-info-close:hover{
+  background:rgba(0,255,200,0.15);
+  border-color:rgba(0,255,200,0.7);
 }
 #start-help-body{
   flex:1;overflow-y:auto;

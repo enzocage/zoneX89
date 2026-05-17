@@ -102,7 +102,7 @@ function drawTile(x,y){
     ctx.fillRect(px+3*TS/4,py+TS/2+1,1,TS/2-3);
   }
 
-  if(t==='pu'&&!fogMap[y][x]){
+  if(t==='pu'){
     const pulse=Math.sin(Date.now()*0.005)*0.5+0.5;
     ctx.save();
     ctx.shadowColor='#aaff00'; ctx.shadowBlur=10+pulse*15;
@@ -131,7 +131,7 @@ function drawTile(x,y){
     ctx.restore();
   }
   
-  if(t==='to'&&!fogMap[y][x]){
+  if(t==='to'){
     ctx.save();
     const grad=ctx.createRadialGradient(px+TS/2,py+TS/2,4,px+TS/2,py+TS/2,TS/2);
     grad.addColorStop(0,'rgba(51,119,238,0.6)');
@@ -149,7 +149,7 @@ function drawTile(x,y){
     ctx.restore();
   }
   
-  if(t==='ma'&&!fogMap[y][x]){
+  if(t==='ma'){
     ctx.save();
     ctx.beginPath();ctx.rect(px+4,py+4,TS-8,TS-8);ctx.clip();
     ctx.strokeStyle='rgba(187,153,85,0.55)';ctx.lineWidth=1.5;
@@ -215,11 +215,12 @@ function drawEnemy(e){
   ctx.fill();
 
   if(e.type==='fast'){
-    ctx.strokeStyle='rgba(255,80,80,0.5)';
-    ctx.lineWidth=1;
+    ctx.strokeStyle='rgba(20,0,0,0.9)';
+    ctx.lineWidth=2;
+    ctx.lineCap='round';
     ctx.beginPath();
-    ctx.moveTo(x+2,y+h/2-3);ctx.lineTo(x+8,y+h/2-3);
-    ctx.moveTo(x+2,y+h/2+3);ctx.lineTo(x+8,y+h/2+3);
+    ctx.moveTo(x+w/2-8,y+h/2-7);ctx.lineTo(x+w/2-1,y+h/2-5);
+    ctx.moveTo(x+w/2+1,y+h/2-5);ctx.lineTo(x+w/2+8,y+h/2-7);
     ctx.stroke();
   }
 
@@ -530,7 +531,7 @@ function overlay(title,sub,col){
   
   ctx.fillStyle='rgba(100,100,100,0.6)';
   ctx.font='15px "Courier New",monospace';
-  ctx.fillText('[R] Neustart',canvas.width/2,canvas.height/2+65);
+  ctx.fillText('[R] Startmenü',canvas.width/2,canvas.height/2+65);
   ctx.restore();
 }
 

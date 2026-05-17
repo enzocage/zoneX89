@@ -63,6 +63,18 @@ async function buildStartScreen(){
     select.appendChild(opt);
   });
 
+  const infoPanel=document.getElementById('start-info');
+  function showInfo(){ infoPanel.classList.add('visible'); }
+  function hideInfo(){ infoPanel.classList.remove('visible'); }
+  document.getElementById('start-help-btn').addEventListener('click',showInfo);
+  document.getElementById('start-info-close').addEventListener('click',hideInfo);
+  document.addEventListener('keydown',e=>{
+    if(startScreenOpen && e.code==='KeyH'){
+      infoPanel.classList.toggle('visible');
+      e.stopPropagation();
+    }
+  });
+
   document.getElementById('start-btn').addEventListener('click',async ()=>{
     const idx=parseInt(select.value)||0;
     const lvl=levels[idx];
