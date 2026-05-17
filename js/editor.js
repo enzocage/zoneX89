@@ -251,6 +251,25 @@ function editorPaintGrid(sx,sy){
   if(gx>=0&&gy>=0&&gx<W&&gy<H) edTiles[gy][gx]=edTool;
 }
 
+function editorFloodFill(startX,startY){
+  const target=edTiles[startY][startX];
+  if(target===edTool) return;
+  const queue=[[startX,startY]];
+  const visited=new Set([`${startX},${startY}`]);
+  edTiles[startY][startX]=edTool;
+  while(queue.length>0){
+    const [cx,cy]=queue.shift();
+    for(const [nx,ny] of [[cx+1,cy],[cx-1,cy],[cx,cy+1],[cx,cy-1]]){
+      const k=`${nx},${ny}`;
+      if(!visited.has(k)&&nx>=0&&ny>=0&&nx<W&&ny<H&&edTiles[ny][nx]===target){
+        visited.add(k);
+        edTiles[ny][nx]=edTool;
+        queue.push([nx,ny]);
+      }
+    }
+  }
+}
+
 function edSave(){
   const saveE=[], saveP=[], saveB=[], saveD=[], saveM=[];
   let saveStart={x:player.sx,y:player.sy};

@@ -61,6 +61,14 @@ canvas.addEventListener("mousemove",e=>{
 
 canvas.addEventListener("mousedown",e=>{
   if(!edMode) return;
+  if(e.button===1){
+    e.preventDefault();
+    if(e.clientX<canvas.width-TB_W){
+      const [gx,gy]=screenToGrid(e.clientX,e.clientY);
+      if(gx>=0&&gy>=0&&gx<W&&gy<H) editorFloodFill(gx,gy);
+    }
+    return;
+  }
   edDrag=true;
   if(e.clientX>=canvas.width-TB_W){
     editorToolbarClick(e.clientX,e.clientY);
@@ -71,6 +79,7 @@ canvas.addEventListener("mousedown",e=>{
 });
 
 canvas.addEventListener("mouseup",()=>{ edDrag=false; mazeSliderDragging=false; });
+canvas.addEventListener("auxclick",e=>{ if(e.button===1) e.preventDefault(); });
 canvas.addEventListener("mouseleave",()=>{ edDrag=false; mazeSliderDragging=false; });
 window.addEventListener("mouseup",()=>{ edDrag=false; mazeSliderDragging=false; });
 

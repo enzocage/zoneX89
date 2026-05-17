@@ -133,7 +133,6 @@ canvas{display:block;image-rendering:pixelated}
 #start-bg{
   position:absolute;inset:0;
   background:url('../gfx/cover2.jpeg') center/cover no-repeat;
-  filter:brightness(0.28) saturate(0.7);
 }
 #start-center{
   position:absolute;
@@ -225,6 +224,10 @@ canvas{display:block;image-rendering:pixelated}
   display:flex;align-items:center;justify-content:center;
   font-size:9px;font-weight:bold;
   font-family:'Courier New',monospace;
+}
+.sc-tile-img{
+  width:22px;height:22px;flex-shrink:0;
+  image-rendering:pixelated;
 }
 .sc-tile-name{
   color:rgba(255,255,255,0.9);font-weight:bold;min-width:130px;flex-shrink:0;

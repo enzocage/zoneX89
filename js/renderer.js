@@ -237,14 +237,6 @@ function drawEnemy(e){
   }
   
   ctx.restore();
-
-  ctx.fillStyle='rgba(0,0,0,0.7)';
-  ctx.font=`bold ${Math.floor(TS*0.35)}px 'Courier New',monospace`;
-  ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.shadowColor='rgba(0,0,0,0.8)';
-  ctx.shadowBlur=3;
-  ctx.fillText(e.type==='fast'?'R':'r',e.px+TS/2,e.py+TS/2+1);
-  ctx.shadowBlur=0;
 }
 
 function drawPlayer(){
@@ -293,14 +285,6 @@ function drawPlayer(){
   ctx.fill();
   
   ctx.restore();
-
-  ctx.fillStyle='rgba(0,20,16,0.7)';
-  ctx.font=`bold ${Math.floor(TS*0.35)}px 'Courier New',monospace`;
-  ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.shadowColor='rgba(0,0,0,0.6)';
-  ctx.shadowBlur=2;
-  ctx.fillText('pl',player.px+TS/2,player.py+TS/2+1);
-  ctx.shadowBlur=0;
 
   const n=player.carryPus.length;
   if(n>0){
@@ -400,17 +384,10 @@ function drawHelp(){
 
     if(item.t==='tile'){
       const tx=lx, ty2=cy-TS2+5;
-      ctx.fillStyle=item.col;
-      ctx.fillRect(tx,ty2,TS2,TS2);
+      const tex=makeEntityCanvas(item.lbl,TS2);
+      ctx.drawImage(tex,tx,ty2,TS2,TS2);
       ctx.strokeStyle='rgba(0,0,0,0.5)'; ctx.lineWidth=0.5;
       ctx.strokeRect(tx,ty2,TS2,TS2);
-      const labelCol = item.col==='#aaff00'?'rgba(0,40,0,0.9)':
-                       item.col==='#00ffcc'?'rgba(0,30,20,0.7)':
-                       'rgba(255,255,255,0.65)';
-      ctx.fillStyle=labelCol; ctx.font=`bold 10px 'Courier New',monospace`;
-      ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.fillText(item.lbl, tx+TS2/2, ty2+TS2/2);
-      ctx.textBaseline='alphabetic';
       ctx.fillStyle='rgba(255,255,255,0.9)'; ctx.font='bold 13px "Courier New",monospace';
       ctx.textAlign='left';
       ctx.fillText(item.name, lx+TS2+10, cy);

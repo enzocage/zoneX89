@@ -131,3 +131,76 @@ function renderTile(ctx, x, y, type, variant = 0){
   const py = y * TS;
   ctx.drawImage(texture, px, py);
 }
+
+const entityCanvasCache = new Map();
+
+function makeEntityCanvas(lbl, size){
+  const key = `${lbl}_${size}`;
+  if(entityCanvasCache.has(key)) return entityCanvasCache.get(key);
+
+  const c = document.createElement('canvas');
+  c.width = size; c.height = size;
+  const x = c.getContext('2d');
+
+  if(lbl === 'pl'){
+    const pad = Math.max(2, Math.floor(size * 0.1));
+    x.save();
+    x.shadowColor='#00ffcc'; x.shadowBlur=size*0.2;
+    const grad = x.createLinearGradient(0,0,size,size);
+    grad.addColorStop(0,'#00ffdd'); grad.addColorStop(1,'#00ccaa');
+    x.fillStyle=grad;
+    const bx=pad,by=pad,bw=size-pad*2,bh=size-pad*2,r=Math.max(2,Math.floor(size*0.15));
+    x.beginPath();
+    x.moveTo(bx+r,by);x.lineTo(bx+bw-r,by);x.quadraticCurveTo(bx+bw,by,bx+bw,by+r);
+    x.lineTo(bx+bw,by+bh-r);x.quadraticCurveTo(bx+bw,by+bh,bx+bw-r,by+bh);
+    x.lineTo(bx+r,by+bh);x.quadraticCurveTo(bx,by+bh,bx,by+bh-r);
+    x.lineTo(bx,by+r);x.quadraticCurveTo(bx,by,bx+r,by);x.closePath();
+    x.fill();
+    x.fillStyle='rgba(255,255,255,0.5)';
+    x.beginPath();
+    x.arc(bx+bw/2-size*0.12,by+bh/2-size*0.05,size*0.1,0,Math.PI*2);
+    x.arc(bx+bw/2+size*0.12,by+bh/2-size*0.05,size*0.1,0,Math.PI*2);
+    x.fill();
+    x.restore();
+    entityCanvasCache.set(key, c);
+    return c;
+  }
+
+  if(lbl === 'R' || lbl === 'r'){
+    const type = lbl==='R' ? 'fast' : 'slow';
+    const color = type==='fast'?'#ff2233':'#ff7700';
+    const glow  = type==='fast'?'#ff0020':'#ff6600';
+    const pad = Math.max(2, Math.floor(size * 0.1));
+    x.save();
+    x.shadowColor=glow; x.shadowBlur=size*0.2;
+    x.fillStyle=color;
+    const bx=pad,by=pad,bw=size-pad*2,bh=size-pad*2;
+    x.beginPath();
+    if(type==='fast'){
+      x.moveTo(bx+bw/2,by+2);x.lineTo(bx+bw-2,by+bh/2);
+      x.lineTo(bx+bw/2,by+bh-2);x.lineTo(bx+2,by+bh/2);x.closePath();
+    } else {
+      const r=Math.max(2,Math.floor(size*0.15));
+      x.moveTo(bx+r,by);x.lineTo(bx+bw-r,by);x.quadraticCurveTo(bx+bw,by,bx+bw,by+r);
+      x.lineTo(bx+bw,by+bh-r);x.quadraticCurveTo(bx+bw,by+bh,bx+bw-r,by+bh);
+      x.lineTo(bx+r,by+bh);x.quadraticCurveTo(bx,by+bh,bx,by+bh-r);
+      x.lineTo(bx,by+r);x.quadraticCurveTo(bx,by,bx+r,by);x.closePath();
+    }
+    x.fill();
+    x.fillStyle='rgba(255,255,255,0.4)';
+    const eyeR=Math.max(1.5,size*0.1);
+    const eyeO=size*0.15;
+    x.beginPath();
+    x.arc(bx+bw/2-eyeO,by+bh/2-size*0.05,eyeR,0,Math.PI*2);
+    x.arc(bx+bw/2+eyeO,by+bh/2-size*0.05,eyeR,0,Math.PI*2);
+    x.fill();
+    x.restore();
+    entityCanvasCache.set(key, c);
+    return c;
+  }
+
+  const tileC = createTileTexture(lbl, 0);
+  x.drawImage(tileC, 0, 0, size, size);
+  entityCanvasCache.set(key, c);
+  return c;
+}
